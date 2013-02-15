@@ -51,6 +51,11 @@
     <name>Jahia Web Clipping</name>
     <packaging>bundle</packaging>
     <description>These are the custom module (Jahia Web Clipping) for running on a Jahia server.</description>
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/webClipping.git</connection>
+        <url>scm:git:git@github.com:Jahia/webClipping.git</url>
+        <developerConnection>scm:git:git@github.com:Jahia/webClipping.git</developerConnection>
+    </scm>
     <repositories>
         <repository>
             <id>jahia-public</id>
