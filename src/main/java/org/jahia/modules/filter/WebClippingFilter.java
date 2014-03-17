@@ -86,7 +86,7 @@ import ucar.nc2.util.net.EasySSLProtocolSocketFactory;
  * Time: 16:10:23
  */
 public class WebClippingFilter extends AbstractFilter {
-    static private final Logger log = Logger.getLogger(WebClippingFilter.class);
+    private static final Logger log = Logger.getLogger(WebClippingFilter.class);
     private final String MAP_SITE_URL_PARAMS = "siteURLParameters";
     // private EhCacheProvider cacheProviders;
     // private boolean cacheable;
@@ -358,7 +358,7 @@ public class WebClippingFilter extends AbstractFilter {
                 return rewriteBody(new String(responseBodyAsBytes, s), urlToClip, s, resource, renderContext);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error getting response", e);
             //this.cacheable = false;
             StringBuffer buffer = new StringBuffer("<html>\n<body>");
             buffer.append('\n' + "Error getting ").append(urlToClip).append(" failed with error : ").append(e.toString());

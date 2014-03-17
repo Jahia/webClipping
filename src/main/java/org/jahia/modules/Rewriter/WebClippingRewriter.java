@@ -51,6 +51,8 @@ import java.util.regex.Pattern;
 
 import net.htmlparser.jericho.*;
 
+import org.apache.log4j.Logger;
+import org.jahia.modules.filter.WebClippingFilter;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -60,6 +62,7 @@ import org.jahia.services.render.Resource;
  * Time: 12:07:04
  */
 public final class WebClippingRewriter {
+    private static final Logger log = Logger.getLogger(WebClippingRewriter.class);
     // ------------------------------ FIELDS ------------------------------
 
     public static final String URL_PATH_PARAM_NAME = "jahia_url_web_clipping";
@@ -246,7 +249,7 @@ public final class WebClippingRewriter {
         try {
             return renderContext.getURLGenerator().getContext() + renderContext.getURLGenerator().getCurrent() + "?" + WebClippingRewriter.URL_PATH_PARAM_NAME + "=" + URLEncoder.encode(getAbsoluteURL(sourceUrl), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            log.error("Error rewritng url", e);
             return null;
         }
     }
