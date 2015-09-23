@@ -102,6 +102,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.modules.Rewriter.WebClippingRewriter;
 import org.jahia.services.render.RenderContext;
@@ -363,31 +364,36 @@ public class WebClippingFilter extends AbstractFilter {
             InputStream inputStream = new BufferedInputStream(httpMethod.getResponseBodyAsStream());
             if (inputStream != null) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream(100 * 1024);
-                byte[] buffer = new byte[100 * 1024];
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, len);
-                }
-                outputStream.close();
-                inputStream.close();
-                final byte[] responseBodyAsBytes = outputStream.toByteArray();
-                String responseBody = new String(responseBodyAsBytes, "US-ASCII");
-                Source source = new Source(responseBody);
-                source.setLogger(null);
-                List list = source.getAllStartTags(HTMLElementName.META);
-                for (Object aList : list) {
-                    StartTag startTag = (StartTag) aList;
-                    Attributes attributes = startTag.getAttributes();
-                    final Attribute attribute = attributes.get("http-equiv");
-                    if (attribute != null && attribute.getValue().equalsIgnoreCase("content-type")) {
-                        type = attributes.get("content").getValue().split(";");
-                        if (type.length == 2) {
-                            contentCharset = type[1].split("=")[1];
+                try {
+                    byte[] buffer = new byte[100 * 1024];
+                    int len;
+                    while ((len = inputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, len);
+                    }
+                    outputStream.close();
+                    inputStream.close();
+                    final byte[] responseBodyAsBytes = outputStream.toByteArray();
+                    String responseBody = new String(responseBodyAsBytes, "US-ASCII");
+                    Source source = new Source(responseBody);
+                    source.setLogger(null);
+                    List list = source.getAllStartTags(HTMLElementName.META);
+                    for (Object aList : list) {
+                        StartTag startTag = (StartTag) aList;
+                        Attributes attributes = startTag.getAttributes();
+                        final Attribute attribute = attributes.get("http-equiv");
+                        if (attribute != null && attribute.getValue().equalsIgnoreCase("content-type")) {
+                            type = attributes.get("content").getValue().split(";");
+                            if (type.length == 2) {
+                                contentCharset = type[1].split("=")[1];
+                            }
                         }
                     }
+                    final String s = contentCharset.toUpperCase();
+                    return rewriteBody(new String(responseBodyAsBytes, s), urlToClip, s, resource, renderContext);
+                } finally {
+                    IOUtils.closeQuietly(outputStream);
+                    IOUtils.closeQuietly(inputStream);
                 }
-                final String s = contentCharset.toUpperCase();
-                return rewriteBody(new String(responseBodyAsBytes, s), urlToClip, s, resource, renderContext);
             }
         } catch (Exception e) {
             log.error("Error getting response", e);
