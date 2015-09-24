@@ -370,8 +370,6 @@ public class WebClippingFilter extends AbstractFilter {
                     while ((len = inputStream.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, len);
                     }
-                    outputStream.close();
-                    inputStream.close();
                     final byte[] responseBodyAsBytes = outputStream.toByteArray();
                     String responseBody = new String(responseBodyAsBytes, "US-ASCII");
                     Source source = new Source(responseBody);
