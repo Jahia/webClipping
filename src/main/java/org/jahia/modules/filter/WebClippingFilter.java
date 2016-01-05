@@ -345,7 +345,6 @@ public class WebClippingFilter extends AbstractFilter {
                     final byte[] responseBodyAsBytes = outputStream.toByteArray();
                     String responseBody = new String(responseBodyAsBytes, "US-ASCII");
                     Source source = new Source(responseBody);
-                    source.setLogger(null);
                     List list = source.getAllStartTags(HTMLElementName.META);
                     for (Object aList : list) {
                         StartTag startTag = (StartTag) aList;

@@ -80,7 +80,6 @@ public final class WebClippingRewriter {
         OutputDocument document = outputDocument;
         // Manage the javascript
         Source source = new Source(document.toString());
-        source.setLogger(null);
         List scripts = source.getAllStartTags(tag);
         StartTag body;
         for (int i = scripts.size() - 1; i >= 0; i--) {
@@ -111,7 +110,6 @@ public final class WebClippingRewriter {
         OutputDocument document = outputDocument;
         // Manage the javascript
         Source source = new Source(document.toString());
-        source.setLogger(null);
         List scripts = source.getAllStartTags(text);
         for (int i = scripts.size() - 1; i >= 0; i--) {
             StartTag startTag = (StartTag) scripts.get(i);
@@ -186,7 +184,6 @@ public final class WebClippingRewriter {
     public OutputDocument rewriteBody(String responseBody, Resource resource, RenderContext context) throws MalformedURLException {
         long start = 0;
         Source source = new Source(responseBody);
-        source.setLogger(null);
         OutputDocument document = new OutputDocument(source);
         StringBuffer stringBuffer = new StringBuffer(responseBody.length());
         StartTag baseTag = source.getNextStartTag(0, HTMLElementName.BASE);
@@ -264,7 +261,6 @@ public final class WebClippingRewriter {
                                               String content) {
         OutputDocument outputDocument = new OutputDocument(new Source(content));
         Source origin = new Source(content);
-        origin.setLogger(null);
         StartTag startTag;
         if (!"".equals(tag)) {
             // Get the list of the specified tag
@@ -297,7 +293,6 @@ public final class WebClippingRewriter {
             outputDocument = WebClippingRewriter.moveScriptInTrunkedHtml(origin, outputDocument, HTMLElementName.STYLE,  tag, attributeName, attributeValue);
         }
         Source source = new Source(outputDocument.toString());
-        source.setLogger(null);
         OutputDocument document = new OutputDocument(source);
         List tags = source.getAllStartTags(HTMLElementName.BODY);
         if (tags != null && tags.size() > 0) {
