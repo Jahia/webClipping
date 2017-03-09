@@ -77,6 +77,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.modules.Rewriter.WebClippingRewriter;
+import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
@@ -95,6 +96,7 @@ public class WebClippingFilter extends AbstractFilter {
     // private EhCacheProvider cacheProviders;
     // private boolean cacheable;
     // private Cache urlsCache;
+    private HttpClientService httpClientService;
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!renderContext.isEditMode()) {
@@ -190,16 +192,15 @@ public class WebClippingFilter extends AbstractFilter {
         String path = urlToClip;
         Map parameters = (Map) map.get("URL_PARAMS");
         // Get the httpClient
-        HttpClient httpClient = new HttpClient();
+        HttpClient httpClient = httpClientService.getHttpClient();
         Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
-        httpClient.getParams().setContentCharset("UTF-8");
+        String characterEncoding = "UTF-8";
         //
         // Add parameters
         if (parameters != null) {
             StringBuffer params = new StringBuffer(4096);
             Iterator iterator = parameters.entrySet().iterator();
             int index = 0;
-            String characterEncoding = httpClient.getParams().getContentCharset();
             while (iterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) iterator.next();
                 if (!entry.getKey().toString().equals("original_method") && !entry.getKey().toString().equals("jahia_url_web_clipping")) {
@@ -246,9 +247,8 @@ public class WebClippingFilter extends AbstractFilter {
         HttpMethodBase httpMethod = new GetMethod(path);
         // Set a default retry handler (see httpclient doc).
         httpMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-        String contentCharset = httpClient.getParams().getContentCharset();
+        httpMethod.getParams().setContentCharset(characterEncoding);
         // Get the response of the url in a string.
-        httpClient.getParams().setContentCharset(contentCharset);
         return getResponse(path, renderContext, resource, chain, httpMethod, httpClient);
     }
 
@@ -256,11 +256,11 @@ public class WebClippingFilter extends AbstractFilter {
         String path = urlToClip;
         Map parameters = (Map) map.get("URL_PARAMS");
         // Get the httpClient
-        HttpClient httpClient = new HttpClient();
+        HttpClient httpClient = httpClientService.getHttpClient();
         Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
-        httpClient.getParams().setContentCharset("UTF-8");
         // Create a post method for accessing the url.
         PostMethod postMethod = new PostMethod(path);
+        postMethod.getParams().setContentCharset("UTF-8");
         // Set a default retry handler (see httpclient doc).
         postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
         if (parameters != null) {
@@ -284,8 +284,6 @@ public class WebClippingFilter extends AbstractFilter {
                 }
             }
         }
-        String contentCharset = httpClient.getParams().getContentCharset();
-        httpClient.getParams().setContentCharset(contentCharset);
         return getResponse(path, renderContext, resource, chain, postMethod, httpClient);
     }
 
@@ -386,4 +384,14 @@ public class WebClippingFilter extends AbstractFilter {
       }
       urlsCache = cacheManager.getCache("WebClipModuleCache");
   }  */
+
+    /**
+     * Injects an instance of the {@link HttpClientService}.
+     * 
+     * @param httpClientService
+     *            an instance of the service
+     */
+    public void setHttpClientService(HttpClientService httpClientService) {
+        this.httpClientService = httpClientService;
+    }
 }

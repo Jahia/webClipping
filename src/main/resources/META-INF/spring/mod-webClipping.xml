@@ -7,5 +7,6 @@
         <property name="applyOnNodeTypes" value="jnt:webClipping"/>
         <property name="skipOnConfiguration" value="include,wrapper"/>
         <!--property name="cacheProviders" ref="ehCacheProvider"/-->
+        <property name="httpClientService" ref="HttpClientService"/>
     </bean>
 </beans>
