@@ -256,7 +256,7 @@ public class WebClippingFilter extends AbstractFilter {
         String path = urlToClip;
         Map parameters = (Map) map.get("URL_PARAMS");
         // Get the httpClient
-        HttpClient httpClient = httpClientService.getHttpClient();
+        HttpClient httpClient = httpClientService.getHttpClient(path);
         Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         // Create a post method for accessing the url.
         PostMethod postMethod = new PostMethod(path);
