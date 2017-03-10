@@ -191,9 +191,6 @@ public class WebClippingFilter extends AbstractFilter {
     private String getURLContentWithGetMethod(String urlToClip, RenderContext renderContext, Resource resource, RenderChain chain, Map map) throws IOException {
         String path = urlToClip;
         Map parameters = (Map) map.get("URL_PARAMS");
-        // Get the httpClient
-        HttpClient httpClient = httpClientService.getHttpClient();
-        Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         String characterEncoding = "UTF-8";
         //
         // Add parameters
@@ -248,6 +245,9 @@ public class WebClippingFilter extends AbstractFilter {
         // Set a default retry handler (see httpclient doc).
         httpMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
         httpMethod.getParams().setContentCharset(characterEncoding);
+        // Get the httpClient
+        HttpClient httpClient = httpClientService.getHttpClient(path);
+        Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         // Get the response of the url in a string.
         return getResponse(path, renderContext, resource, chain, httpMethod, httpClient);
     }
