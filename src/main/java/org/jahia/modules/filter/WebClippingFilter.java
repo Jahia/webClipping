@@ -73,7 +73,6 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.modules.Rewriter.WebClippingRewriter;
@@ -82,8 +81,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-
-import ucar.nc2.util.net.EasySSLProtocolSocketFactory;
 
 /**
  * User: Dorth
@@ -247,7 +244,7 @@ public class WebClippingFilter extends AbstractFilter {
         httpMethod.getParams().setContentCharset(characterEncoding);
         // Get the httpClient
         HttpClient httpClient = httpClientService.getHttpClient(path);
-        Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
+        //Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         // Get the response of the url in a string.
         return getResponse(path, renderContext, resource, chain, httpMethod, httpClient);
     }
@@ -257,7 +254,7 @@ public class WebClippingFilter extends AbstractFilter {
         Map parameters = (Map) map.get("URL_PARAMS");
         // Get the httpClient
         HttpClient httpClient = httpClientService.getHttpClient(path);
-        Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
+        //Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
         // Create a post method for accessing the url.
         PostMethod postMethod = new PostMethod(path);
         postMethod.getParams().setContentCharset("UTF-8");
