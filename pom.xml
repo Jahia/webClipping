@@ -62,6 +62,9 @@
     <url>scm:git:git@github.com:Jahia/webClipping.git</url>
     <tag>HEAD</tag>
   </scm>
+  <properties>
+    <jahia-module-signature>MCwCFHG73HVcYpyFcd0VHX+3WMFgTy91AhRZipQwjP15n7SKGE65Q4O7NAgkiw==</jahia-module-signature>
+  </properties>
   <repositories>
     <repository>
       <releases>
